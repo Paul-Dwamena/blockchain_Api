@@ -4,7 +4,7 @@ const express=require("express");
 const morgan=require("morgan");
 const bodyParser=require("body-parser");
 //var httpPort = parseInt(process.env.HTTP_PORT) || 5000;
-//var p2pPort = parseInt(process.env.P2P_PORT) || 6001;
+var p2pPort = parseInt(process.env.P2P_PORT) || 6001;
 const blockchain=require("./src/blockchain");
 const cors = require('cors')
 const app = express();
@@ -133,4 +133,4 @@ app.listen(process.env.PORT || 4000, function(){
 
 
 //initHttpServer(httpPort);
-//initP2PServer(p2pPort);
+initP2PServer(p2pPort);
