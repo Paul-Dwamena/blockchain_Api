@@ -3,7 +3,7 @@ const p2p=require("./src/peer2peer");
 const express=require("express");
 const morgan=require("morgan");
 const bodyParser=require("body-parser");
-//var httpPort = parseInt(process.env.HTTP_PORT) || 3001;
+var httpPort = parseInt(process.env.HTTP_PORT) || 5000;
 var p2pPort = parseInt(process.env.P2P_PORT) || 6001;
 const blockchain=require("./src/blockchain");
 const cors = require('cors')
@@ -120,8 +120,8 @@ app.get('/getKeys',function(req,res){
   
 });
 
-app.listen(process.env.PORT || 5000, function () {
-    console.log('Listening http on port: ' +5000);
+app.listen(myHttpPort, function () {
+    console.log('Listening http on port: ' + myHttpPort);
 });
 };
 
