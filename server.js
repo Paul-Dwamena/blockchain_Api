@@ -1,7 +1,11 @@
-const express = require('express')
-const path = require('path')
-const PORT = process.env.PORT || 5000
+const express = require('express');
+const app = express();
+const path = require('path');
 
-express()
-  .get('/', (req, res) => res.render('index'))
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(process.env.PORT || 4000, function(){
+    console.log('Your node js server is running');
+});
