@@ -5,6 +5,8 @@ require('babel-core/register')({
                 "env",{
                     "targets":{
                         "node":"current"
+                    }
+                }
 
         ]
     ]
