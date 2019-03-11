@@ -121,7 +121,7 @@ app.get('/getKeys',function(req,res){
 });
 
 app.listen(process.env.PORT || 5000, function () {
-    console.log('Listening http on port: ' + myHttpPort);
+    console.log('Listening http on port: ' +5000);
 });
 };
 
