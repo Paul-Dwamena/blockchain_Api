@@ -1,8 +1,15 @@
 require ('babel-polyfill');
-require('babel-core/register')(
-    {
-        "presets": ["env"]
-      
+require('babel-core/register')({
+    presets: [ 
+        [
+                "env",{
+                    "targets":{
+                        "node":"current"
+                    }
+                }
+
+        ]
+    ]
 })
 
 
