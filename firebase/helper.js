@@ -157,15 +157,15 @@ function encryptData(text) {
    }
    
    
-   /*function generateSecurityKey(){
+   function generateSecurityKey(){
        var counter=0;
        var  number=[];
        while(counter<8){
            number.push(randomNumber(1,9))
-       }
+       }counter++
 
     return number;
-   }*/
+   }
    //console.log(land.OtherDocument);
    export{encryptData,decryptdata,generateAsaaseCode};
    
