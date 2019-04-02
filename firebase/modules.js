@@ -3,7 +3,7 @@ const route=require('express').Router();
 import {firebase}from './firebasekey';
 import 'babel-polyfill';
 const randomstring =require("randomstring");
-import {generateAsaaseCode,encryptData,decryptdata} from './helper';
+import {generateAsaaseCode,encryptData,decryptdata,generateSecurityKey} from './helper';
 
 
 
@@ -259,8 +259,9 @@ var  landownership=function(CompoundDetails){
 }
 
 
-var saveAsaasecode=function(data){
+var saveAsaasecode=function(data,callback){
     var asaasecode=generateAsaaseCode(data.region);
+    var securitynumber=generateSecurityKey();
 
     var dataToencrypt=encryptData(data);
     var msg;
@@ -278,10 +279,16 @@ var saveAsaasecode=function(data){
                 msg= "Data has been saved successfully"
             
          }
+         return callback({
+            msg:msg,
+            asaasecode:asaasecode,
+            securitynumber:securitynumber
+         })
          
         
+  
+        
     })
-    return msg;
 }
 
 //function to update the asaasedetails
