@@ -16,9 +16,8 @@ var generateString=function(){
 
 
 var User= /** @class */ (function () {
-    function user(firstname,lastname,email,password) {
-        this.firstname=firstname;
-        this.lastname=lastname;
+    function user(username,email,password) {
+        this.username=username,
        // this.role=role;
         this.email=email,
         this.password=password
@@ -28,16 +27,15 @@ var User= /** @class */ (function () {
 }());
 
   
-
+//work on the other details later
 const register=function login(data,callback){
     var id=generateString();
     var hashedPassword = bcrypt.hashSync(data.password, 8);
     
-    var newUser=new User(data.firstname,data.lastname,data.email,hashedPassword);
+    var newUser=new User(data.username,data.email,data.password)
     const userReference=firebase.database().ref("staff");
     userReference.child(id).set({
-        firstname:newUser.firstname,
-        lastname:newUser.lastname,
+        username:newUser.username,
         email:newUser.email,
         password:newUser.password
 
@@ -47,7 +45,7 @@ const register=function login(data,callback){
           return false
 
       }else{
-         //console.log(secret.jwt)   
+         
         var token = jwt.sign({user:newUser},secret.jwt, {
             expiresIn: 60 * 24 
           });
@@ -79,7 +77,7 @@ const login=function(data,callback){
            var passwordIsValid = bcrypt.compareSync(data.password, userpassword);
            
            if (!passwordIsValid) {
-              var response="Authentication failed because no token was found"
+              var response="The password you entered might be incorrect"
               var auth=false
            }else
            {   

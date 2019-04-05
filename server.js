@@ -20,6 +20,7 @@ import {generatekeys,generateSignature,getDataFromSignature,ProcessTransaction}f
 import {firebase}from './firebase/firebasekey';
 import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,AsaasecodeExist} from './firebase/modules';
 import {encryptData,decryptdata,generateSecurityKey,sendEmail,designMessagebody} from './firebase/helper';
+import {register,login} from './authentication/authentication';
 
 
 
@@ -36,11 +37,25 @@ import {encryptData,decryptdata,generateSecurityKey,sendEmail,designMessagebody}
       res.sendFile(path.join(__dirname, 'index.html'));
   });
 
-   
-     
+
+
+      
       app.get('/blocks', function (req, res) {
         res.send(getBlockchain());
       });
+
+      app.post('/login',function(req,res){
+        login(req.body,function(response){
+          var data=response;
+          res.send({
+           message:data.response
+          })
+        })
+      })
+
+      app.post('/register',function(req,res){
+
+      })
 
       app.post('/RegisterLand',function(req,res){
         var data=landownership(req.body);
