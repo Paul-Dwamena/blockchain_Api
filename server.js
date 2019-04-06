@@ -18,7 +18,7 @@ import {connectToPeers, getSockets, initP2PServer} from './src/peer2peer';
 import {Block,Transaction,LandOwnerShip, generateNextBlock, getBlockchain} from './src/blockchain';
 import {generatekeys,generateSignature,getDataFromSignature,ProcessTransaction}from './src/transaction';
 import {firebase}from './firebase/firebasekey';
-import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,AsaasecodeExist} from './firebase/modules';
+import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,asaasecodeExist} from './firebase/modules';
 import {encryptData,decryptdata,generateSecurityKey,sendEmail,designMessagebody} from './firebase/helper';
 import {register,login} from './authentication/authentication';
 

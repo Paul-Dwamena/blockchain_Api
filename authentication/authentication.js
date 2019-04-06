@@ -65,34 +65,37 @@ const register=function login(data,callback){
 
 
 const login=function(data,callback){
+
     const user=firebase.database().ref("staff").orderByChild('email').equalTo(data.email);
-    user.once("child_added",function(snapshot){
+    user.once("value",function(snapshot){
+        
        
         if(snapshot.exists()){
-            
-           var user=snapshot.val();
+            var user=snapshot.val();
            
-           var userpassword=user.password;
-           
-           var passwordIsValid = bcrypt.compareSync(data.password, userpassword);
-           
-           if (!passwordIsValid) {
-              var response="The password you entered might be incorrect"
-              var auth=false
-           }else
-           {   
-               var auth=true;
-               var response="Login successfully";
-               var token = jwt.sign({user:user},secret.jwt, {
-                   expiresIn: 86400
-                 });
-           }
-            
+        var userpassword=user.password;
+        
+        var passwordIsValid = bcrypt.compareSync(data.password, userpassword);
+        
+        if (!passwordIsValid) {
+           var response="The password you entered might be incorrect"
+           var auth=false
+        }else
+        {   
+            var auth=true;
+            var response="Login successfully";
+            var token = jwt.sign({user:user},secret.jwt, {
+                expiresIn: 86400
+              });
+        }
+          
+          
 
        }else{
            
-        var response="User with this email does not exist";
-        var auth=false;
+        console.log("hello")  
+        var response="User with this email does not exist"
+        var auth=false
        }
            return callback({
                response:response,
