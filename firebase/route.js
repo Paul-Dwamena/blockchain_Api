@@ -50,28 +50,6 @@ route.get('/landownershipstatus', function (req, res) {
         )
 });  
      
-  route.get('/mytest', function(req, res){
-    var booths = firebase.database().ref("owner");
-    //var hospital = firebase.database().ref('Lands');
 
-    booths.once('value', function (snapshot) {
-        var promises = [];
- 
-        
-        
-        snapshot.forEach(function (childSnapshot) {
-            console.log(childSnapshot.val());
-            var childKey = childSnapshot.key;
-            //console.log(childKey);
-            
-            var fk = snapshot.child(childKey).val();
-            console.log(fk);
-            
-            //var promise = hospital.child(childSnapshot.val().hospital_fk).once('value');
 
-           // promises.push(promise);
-        });
-        
-    })
-})
 module.exports=route;
