@@ -10,8 +10,26 @@ const util = require('util')
 var randomNumber = require("random-number-csprng");
 
 
+function randomValueHex(len) {
+    return crypto
+      .randomBytes(Math.ceil(len / 2))
+      .toString('hex') 
+      .slice(0, len) 
+  }
+  
 
+  function random (howMany, chars) {
+    var characters =chars ;
+  var rnd = crypto.randomBytes(howMany) , value = new Array(howMany)
+      , len = len = Math.min(256, characters.length), d = 256 / len
 
+  for (var i = 0; i < howMany; i++) {
+        value[i] = characters[Math.floor(rnd[i] / d)]
+  };
+
+  return value.join('');
+}
+ 
 
 
 const nexmo=new Nexmo({
@@ -137,20 +155,34 @@ var getareacode=function(region){
 }
 
 //function to generate asaasecode
-var generateAsaaseCode=function(landarea){
+var generateLandCode=function(landarea){
     var firstrandomword=generateString();
     var secondrandomword=generateString();
     var thirdrandomword=generateString();
 
     var areacode=getareacode(landarea);
-    var asaasecode=areacode+"-"+firstrandomword+"-"+secondrandomword+"-"+thirdrandomword;
+    var landcode=areacode+"-"+firstrandomword+"-"+secondrandomword+"-"+thirdrandomword;
 
-    return(asaasecode);
+    return(landcode);
 
 }
 
+var generateAsaaseCode=function(){
+    var value1 = randomValueHex(4) 
+    var value2 = randomValueHex(3) 
+    var value3 = randomValueHex(3) 
 
-//console.log(AsaaseCode("Greater-Accra"));
+    var code=value2+"-"+value1+"-"+value3;
+
+    var asaasecode=code.toUpperCase();
+
+    return asaasecode
+  
+}
+
+
+
+
 
 function encryptData(text) {
     let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
@@ -172,17 +204,13 @@ function encryptData(text) {
    }
    
    
-   var generateSecurityKey=function(){
-    var theString=randomstring.generate({
-        length:8,
-        charset:'hex',
-        capitalization:'uppercase'
-    });
-    return theString;
-    
+   var generateSecurityKey=function(characters){
+    var key=random(12,characters);
+    var securitykey=key.toUpperCase();
+    return securitykey;
 }
 
    //console.log(land.OtherDocument);
-   export{encryptData,decryptdata,generateAsaaseCode,generateSecurityKey,sendEmail,designMessagebody};
+   export{encryptData,decryptdata,generateAsaaseCode,generateSecurityKey,sendEmail,designMessagebody,generateLandCode};
    
    

@@ -3,23 +3,23 @@ const route=require('express').Router();
 import {firebase}from './firebasekey';
 import 'babel-polyfill';
 const randomstring =require("randomstring");
-import {generateAsaaseCode,encryptData,decryptdata,generateSecurityKey} from './helper';
+import {generateAsaaseCode,encryptData,decryptdata,generateSecurityKey,generateLandCode} from './helper';
 
 
 
-var generateString=function(){
+var generateString=function(data){
     var theString=randomstring.generate({
-        length:8,
-        charset:'numeric'
+        length:3,
+        charset:data
     });
     return theString;
     
 }
 
+
 //SingleOwner Class
 var SingleOwnerDetails= /** @class */ (function () {
     function SingleOwnerDetails(firstname,lastname,othername,contact,email,nationality,NationalIdNo) {
-        this.ownerid =generateString();
         this.firstname=firstname;
         this.lastname=lastname;
         this.othername=othername;
@@ -35,7 +35,6 @@ var SingleOwnerDetails= /** @class */ (function () {
 //GroupOwner Class
 var GroupOwnerDetails= /** @class */ (function () {
     function GroupOwnerDetails(companyName,CompanyType,email,PhoneNumber) {
-        this.ownerid =generateString();
         this.companyName=companyName,
         this.CompanyType=CompanyType,
         this.email=email,
@@ -47,7 +46,6 @@ var GroupOwnerDetails= /** @class */ (function () {
 //Land Details class
 var LandDetails= /** @class */ (function () {
     function LandDetails(landsize,Landarea,landregion) {
-        this.landid =generateString();
         this.landsize=landsize
         this.landarea=Landarea;
         this.landregion=landregion;
@@ -58,7 +56,6 @@ var LandDetails= /** @class */ (function () {
 //Land Details class
 var LandOwnershipStatus= /** @class */ (function () {
     function LandOwnershipStatus(tenuretype,DocumentOfApproval,date) {
-        this.OwnershipId =generateString();
         this.Tenuretype=tenuretype;
         this.DocumentOfApproval=DocumentOfApproval;
         this.DateTended=date
@@ -192,7 +189,7 @@ var addSingleOwner=function(OwnerDetails,index){
 
 var  landownership=function(CompoundDetails){
 
-    var id=generateString();
+    
     var msg;
     var index;
     //data of owner
@@ -216,12 +213,13 @@ var  landownership=function(CompoundDetails){
     var DocumentOfApproval=CompoundDetails.DocumentofApproval;
     var DateTended=CompoundDetails.DateTended
 
-
+    var id=generateLandCode(landregion);
     var OwnerType=CompoundDetails.OwnerType; 
     var newLand=new LandDetails(landsize,landarea,landregion);
     
     
     var newLandOwnershipStatus=new LandOwnershipStatus(Tenuretype,DocumentOfApproval,DateTended);
+    
     
 
     if(OwnerType==="SingleOwner"){
@@ -259,11 +257,17 @@ var  landownership=function(CompoundDetails){
 }
 
 
-var saveAsaasecode=function(data,callback){
-    var asaasecode=generateAsaaseCode(data.region);
-    var securitynumber=generateSecurityKey();
 
-    var dataToencrypt=encryptData(data);
+var saveAsaasecode=function(data,callback){
+    var asaasecode=generateAsaaseCode();
+    var characters=generateString(data.landarea)+generateString(data.NationalIdNo)+generateString("ZJXMWOPQLHJ");
+    var securitynumber=generateSecurityKey(characters);
+
+   var body={
+        data:data,
+        securitynumber:securitynumber
+    }
+    var dataToencrypt=encryptData(body);
     var msg;
 
     var asaasecodeReference=firebase.database().ref("AsaasecodeData");
@@ -319,7 +323,7 @@ const  getAsaaseDetails=function(asaasecode,callback){
         
     const  asaasedetails=firebase.database().ref("AsaasecodeData").orderByKey().equalTo(asaasecode);
       
-    asaasedetails.on("child_added",function(snapshot){
+    asaasedetails.once("child_added",function(snapshot){
         
         const  Data={
             iv:snapshot.val().record.iv,
@@ -330,6 +334,7 @@ const  getAsaaseDetails=function(asaasecode,callback){
         return callback({
             detail:mydetail
         })
+       
       })
        
 }
@@ -352,11 +357,48 @@ const asaasecodeExist= function (data,callback){
 
 
 
+const addLandToAccount=function(data,callback){
+    
+    var asaasecode=data.asaasecode;
+    var securitynumber=data.securitynumber;
+     asaasecodeExist(asaasecode,function(detail){
+         
+        var response=detail.response
+        var err=null;
+        var data=null;
+         if(response){
+             getAsaaseDetails(asaasecode,function(response){     
+                 var secCode=response.detail.securitynumber;
+                 if(secCode!=securitynumber){
+                      err=new Error("The security code you provided is incorrect")            
+                 }
+                 else{
+                     data={
+                         landcode:response.detail.data.landid,
+                         landregion:response.detail.data.others.region,
+                         landarea:response.detail.data.others.landarea,
+                         sizeofLand:response.detail.data.others.landsize,
+                     }
+                    
+                 }
+                 return callback(err,data)
+             });
+         }else{
+              err=new Error("You did not pass the security hurdles.Check your inputs")
+              return callback(err,data)
+         }
+         
+     })
+      
+    
+    
+}
 
 
 
 
-export {addland,landownership,saveAsaasecode,getAsaaseDetails,asaasecodeExist,updateAsaaseCode};
+
+export {addland,landownership,saveAsaasecode,getAsaaseDetails,asaasecodeExist,updateAsaaseCode,addLandToAccount};
 
 
 

@@ -18,12 +18,9 @@ import {connectToPeers, getSockets, initP2PServer} from './src/peer2peer';
 import {Block,Transaction,LandOwnerShip, generateNextBlock, getBlockchain} from './src/blockchain';
 import {generatekeys,generateSignature,getDataFromSignature,ProcessTransaction}from './src/transaction';
 import {firebase}from './firebase/firebasekey';
-import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,asaasecodeExist} from './firebase/modules';
-import {encryptData,decryptdata,generateSecurityKey,sendEmail,designMessagebody} from './firebase/helper';
+import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,asaasecodeExist,addLandToAccount} from './firebase/modules';
+import {encryptData,decryptdata,generateSecurityKey,sendEmail,designMessagebody,generateLandCode,generateAsaaseCode} from './firebase/helper';
 import {register,login} from './authentication/authentication';
-
-
-
 
 
 
@@ -81,9 +78,22 @@ import {register,login} from './authentication/authentication';
       
       })
 
+      app.post('/addLandToAccount',function(req,res){
+        addLandToAccount(req.body,function(err,data){
+          if(err){
+            res.send(err.message)
+            
+          }
+          else{
+            res.send(data)
+          }
+         
+        })
+          
+      })
 
       app.post('/completeTransaction',function(req,res){
-        updateAsaaseCode(req.body,"GEA-467-188-732",function(detail){
+        updateAsaaseCode(req.body,req.body.asaasecode,function(detail){
           var data=detail;
           res.send(data);
         });
