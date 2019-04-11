@@ -42,12 +42,16 @@ import {register,login} from './authentication/authentication';
       });
 
       app.post('/login',function(req,res){
-        login(req.body,function(response){
-          var data=response;
-          res.send({
-           message:data.response
-          })
+        login(req.body,function(data){
+          var response=data;
+          if(response.auth){
+            res.status(200).send({success:response.response})
+          }
+          else{
+            res.status(404).send(response.response)
+          }
         })
+         
       })
 
       app.post('/register',function(req,res){
