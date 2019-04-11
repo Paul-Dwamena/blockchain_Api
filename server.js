@@ -85,11 +85,14 @@ import {register,login} from './authentication/authentication';
       app.post('/addLandToAccount',function(req,res){
         addLandToAccount(req.body,function(err,data){
           if(err){
-            res.send(err.message)
+            res.status(404).send({error:err.message})
+        
             
           }
           else{
-            res.send(data)
+            res.status(200).send({response:data})
+            
+            
           }
          
         })
