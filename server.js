@@ -18,25 +18,31 @@ import {connectToPeers, getSockets, initP2PServer} from './src/peer2peer';
 import {Block,Transaction,LandOwnerShip, generateNextBlock, getBlockchain} from './src/blockchain';
 import {generatekeys,generateSignature,getDataFromSignature,ProcessTransaction}from './src/transaction';
 import {firebase}from './firebase/firebasekey';
-import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,asaasecodeExist,addLandToAccount} from './firebase/modules';
+import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,asaasecodeExist,addLandToAccount,setLandForSale,removeFromSale,getallLandsForSale} from './firebase/modules';
 import {encryptData,decryptdata,generateSecurityKey,sendEmail,designMessagebody,generateLandCode,generateAsaaseCode} from './firebase/helper';
 import {register,login} from './authentication/authentication';
 
 
 
-   
+
     
     app.use(bodyParser.json());
     app.use(cors());
     app.use(morgan("short"));
-    app.use('/',routes);
+   
     app.get('/', function(req, res) {
       res.sendFile(path.join(__dirname, 'index.html'));
   });
 
 
 
-      
+      app.get('/allLandsForSale',function(req,res){
+        getallLandsForSale(function(err,response){
+          if(err)res.send(err)
+          res.send(response)
+        })
+      })
+  
       app.get('/blocks', function (req, res) {
         res.send(getBlockchain());
       });
@@ -91,12 +97,30 @@ import {register,login} from './authentication/authentication';
           }
           else{
             res.status(200).send({response:data})
-            
-            
-          }
          
+          }
         })
           
+      })
+      app.post('/removeFromSale',function(req,res){
+        removeFromSale(req.body,function(err,success){
+          if(err){
+            res.send(err)
+          }else{
+            res.send(success)
+          }
+
+        })
+
+      })
+      app.post('/setForSale',function(req,res){
+        setLandForSale(req.body,function(err,success){
+         if(err){
+           res.send(err)
+         }else{
+           res.send(success)
+         }
+        })
       })
 
       app.post('/completeTransaction',function(req,res){

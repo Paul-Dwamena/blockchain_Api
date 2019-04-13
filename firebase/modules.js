@@ -393,12 +393,65 @@ const addLandToAccount=function(data,callback){
     
     
 }
+const removeFromSale=function(data,callback){
+    var landid=data.landid;
+    var landref=firebase.database().ref("LandsForSale/"+landid+"/record")
+    landref.remove(function(msg,err){
+        if(err){
+            var error="Operation unsuccessful"
+        }else{
+            var success="Land was removed sucessfully"
+        }
+        return callback(error,success)
+    })
+}
+
+
+const setLandForSale=function(data,callback){
+    
+    var data={
+        landid:data.landid,
+        date:data.date,
+        time:data.time
+       }   
+    const  LandsForSaleReference=firebase.database().ref("LandsForSale");
+    LandsForSaleReference.child(data.landid).set({
+     record:data   
+    },function(error){
+        if(error){
+              var  err = "Error occured and data wasnt able to save successfully"
+         
+        }
+         else{
+           var success = "Data has been saved successfully"
+
+         }
+         return callback(err,success)
+        
+    })
 
 
 
+}
+const getallLandsForSale=function(callback){
+    var landforSaleReference=firebase.database().ref("LandsForSale");
+       landforSaleReference.on("value",function(snapshot){
+        var lands=snapshot.val();
+        return callback(null,lands) 
+         },function(error){
+             if(error){
+                var error="An error occured"+errorObject
+                return callback(error,null)
+             }
+            
+          
+        })
+          
+}
 
 
-export {addland,landownership,saveAsaasecode,getAsaaseDetails,asaasecodeExist,updateAsaaseCode,addLandToAccount};
+
+export {addland,getallLandsForSale,landownership,saveAsaasecode,getAsaaseDetails,asaasecodeExist,updateAsaaseCode,addLandToAccount,setLandForSale,removeFromSale};
 
 
 

@@ -30,6 +30,7 @@ route.get('/landownershipstatus', function (req, res) {
     }
     )
   });
+   
 
   
 
@@ -49,6 +50,9 @@ route.get('/landownershipstatus', function (req, res) {
         }
         )
 });  
+
+
+
      
 
 
