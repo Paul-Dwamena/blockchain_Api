@@ -22,6 +22,8 @@ var Message = /** @class */ (function () {
 var initP2PServer = function (p2pPort) {
     var server = new websocketserver({ port: p2pPort });
     server.on('connection', function (ws) {
+        //ws.send("Welcome to blockchain")
+        console.log("Someone has connected")
         initConnection(ws);
     });
     console.log('listening websocket p2p port on: ' + p2pPort);
@@ -131,9 +133,10 @@ var broadcastLatest = function () {
     broadcast(responseLatestMsg());
 };
 var connectToPeers = function (newPeer) {
-    var ws = new websocketserver({port:newPeer});
-    ws.on('open', function () {
-        initConnection(ws);
+    var wss = new websocketserver({port:newPeer});
+    wss.on('open', function (ws) {
+        initConnection(wss);
+        ws.send("hello to everyone")
     });
     ws.on('error', function () {
         console.log('connection failed');

@@ -192,5 +192,5 @@ app.listen(process.env.PORT || 4000, function(){
 });
 
 
-//initHttpServer(httpPort);
+
 initP2PServer(p2pPort);
