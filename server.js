@@ -178,7 +178,7 @@ import {register,login} from './authentication/authentication';
        });
       app.post('/addPeer', function (req, res) {
         connectToPeers(req.body.peer);
-        res.send();
+        res.send("connected successfully");
        });
 
 app.get('/getKeys',function(req,res){

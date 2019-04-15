@@ -1,5 +1,5 @@
 
-var ws=new WebSocket("https://hashland.herokuapp.com");
+var ws=new WebSocket("ws://localhost:6002");
 ws.onopen=function(){
     setTitle("Connected to heroku")
 };
