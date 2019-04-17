@@ -133,12 +133,11 @@ var broadcastLatest = function () {
     broadcast(responseLatestMsg());
 };
 var connectToPeers = function (newPeer) {
-    var wss = new websocketserver({port:newPeer});
-    wss.on('connection', function (ws) {
-        initConnection(wss);
-        ws.send("hello to everyone")
+    var ws = new websocketserver({port:newPeer});
+    ws.on('open', function () {
+        initConnection(ws);
     });
-    wss.on('error', function () {
+    ws.on('error', function () {
         console.log('connection failed');
     });
 };

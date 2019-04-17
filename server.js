@@ -82,8 +82,8 @@ import {register,login} from './authentication/authentication';
         saveAsaasecode(body,function(details){
           var asaasecode=details.asaasecode;
           var securitynumber=details.securitynumber;
-          var messagebody=designMessagebody(asaasecode,securitynumber);
-          sendEmail(phonenumber,messagebody,"Registration sucessful.Find your details below") 
+          //var messagebody=designMessagebody(asaasecode,securitynumber);
+         // sendEmail(phonenumber,messagebody,"Registration sucessful.Find your details below") 
         })
       
       })
@@ -105,9 +105,9 @@ import {register,login} from './authentication/authentication';
       app.post('/removeFromSale',function(req,res){
         removeFromSale(req.body,function(err,success){
           if(err){
-            res.send(err)
+            res.json(err)
           }else{
-            res.send(success)
+            res.json(success)
           }
 
         })
@@ -116,9 +116,9 @@ import {register,login} from './authentication/authentication';
       app.post('/setForSale',function(req,res){
         setLandForSale(req.body,function(err,success){
          if(err){
-           res.send(err)
+           res.json(err)
          }else{
-           res.send(success)
+           res.json(success)
          }
         })
       })
