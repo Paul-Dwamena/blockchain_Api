@@ -7,6 +7,7 @@ import {generateAsaaseCode,encryptData,decryptdata,generateSecurityKey,generateL
 
 
 
+
 var generateString=function(data){
     var theString=randomstring.generate({
         length:3,
@@ -15,19 +16,32 @@ var generateString=function(data){
     return theString;
     
 }
+var generateID=function(data){
+    var theString=randomstring.generate({
+        length:5,
+        charset:'numeric'
+    });
+    return theString;
+    
+}
+
 
 
 //SingleOwner Class
 var SingleOwnerDetails= /** @class */ (function () {
-    function SingleOwnerDetails(firstname,lastname,othername,contact,email,nationality,NationalIdNo) {
+    function SingleOwnerDetails(firstname,lastname,othername,contact,email,NationalIdNo,address,nextOfKin,kin_number,witness,witness_number) {
         this.firstname=firstname;
         this.lastname=lastname;
         this.othername=othername;
         this.contact=contact,
         this.email=email,
-        this.nationality=nationality,
-        this.NationalIdNo=NationalIdNo
-        //this.ImageUrl=ImageUrl
+        this.NationalIdNo=NationalIdNo,
+        this.address=address,
+        this.nextOfKin=nextOfKin,
+        this.kin_number=kin_number,
+        this.witness=witness,
+        this.witness_number=witness_number
+        
     }
     return SingleOwnerDetails;
 }());
@@ -55,9 +69,9 @@ var LandDetails= /** @class */ (function () {
 
 //Land Details class
 var LandOwnershipStatus= /** @class */ (function () {
-    function LandOwnershipStatus(tenuretype,DocumentOfApproval,date) {
-        this.Tenuretype=tenuretype;
-        this.DocumentOfApproval=DocumentOfApproval;
+    function LandOwnershipStatus(landownershiptype,supportingDocuments,date) {
+        this.landownershiptype=landownershiptype;
+        this.supportingDocuments=supportingDocuments;
         this.DateTended=date
     }
     return LandOwnershipStatus;
@@ -65,14 +79,14 @@ var LandOwnershipStatus= /** @class */ (function () {
 
 var addLandOwnerShipStatus=function(LandOwnershipStatus,index){
         var id=index;
-        var Tenuretype=LandOwnershipStatus.Tenuretype;
-        var DocumentOfApproval=LandOwnershipStatus.DocumentOfApproval;
+        var LandOwnershiptype=LandOwnershipStatus.landownershiptype;
+        var DocumentOfApproval=LandOwnershipStatus.supportingDocuments;
         var DateTended=LandOwnershipStatus.DateTended;
 
         var landownershipstatusReference=firebase.database().ref("LandownershipStatus");
         landownershipstatusReference.child(id).set({
-            Tenuretype:Tenuretype,
-            DocumentOfApproval:DocumentOfApproval,
+            LandOwnershiptype:LandOwnershiptype,
+            SupportingDocument:DocumentOfApproval,
             DateTended:DateTended
         },function(error){
             if(error){
@@ -118,17 +132,23 @@ var addGroupOwner=function(OwnerDetails,index){
 //adding owner to dadabase
 
 var addSingleOwner=function(OwnerDetails,index){
-
     
+        
         var id=index;
         var firstname=OwnerDetails.firstname;
         var lastname=OwnerDetails.lastname;
         var othername=OwnerDetails.othername;
         var contact=OwnerDetails.contact;
         var email=OwnerDetails.email;
-        var nationality=OwnerDetails.nationality;
         var NationalIdNo=OwnerDetails.NationalIdNo;
-        //var image=OwnerDetails.ImageUrl
+        var address=OwnerDetails.address;
+        var nextOfKin=OwnerDetails.nextOfKin;
+        var kin_number=OwnerDetails.kin_number;
+        var witness=OwnerDetails.witness;
+        var witness_number=OwnerDetails.witness_number;
+
+
+        
         
         var ownerReference=firebase.database().ref("owner");
         ownerReference.child(id).set({
@@ -137,9 +157,13 @@ var addSingleOwner=function(OwnerDetails,index){
             contact:contact,
             email:email,
             othername:othername,
-            nationality:nationality,
-            NationalIdNo:NationalIdNo
-           // image:image
+            NationalIdNo:NationalIdNo,
+            address:address,
+            nextOfKin:nextOfKin,
+            kin_number:kin_number,
+            witness:witness,
+            witness_number:witness_number
+
             
         },function(error){
             if(error){
@@ -158,11 +182,12 @@ var addSingleOwner=function(OwnerDetails,index){
 
  //adding a land
  var addland=function(landDetails,index){
+
         var id=index;
         var landregion=landDetails.landregion;
         var landsize=landDetails.landsize;
         var landarea=landDetails.landarea;
-        //var landimage=landDetails.image;
+    
         
         
         var landReference=firebase.database().ref("Lands");
@@ -188,19 +213,24 @@ var addSingleOwner=function(OwnerDetails,index){
     
 
 var  landownership=function(CompoundDetails){
-
+    
     
     var msg;
     var index;
     //data of owner
+    
     var firstname=CompoundDetails.firstname;
     var lastname=CompoundDetails.lastname;
     var othername=CompoundDetails.othername;
     var contact=CompoundDetails.contact;
     var email=CompoundDetails.email;
-    var nationality=CompoundDetails.nationality;
     var NationalIdNo=CompoundDetails.NationalIdNo;
-    //var image=req.body.ImageUrl
+    var address=CompoundDetails.address;
+    var nextOfKin=CompoundDetails.nextOfKin;
+    var kin_number=CompoundDetails.kin_number;
+    var witness=CompoundDetails.witness;
+    var witness_number=CompoundDetails.witness_number;
+    
     
     //data of land
     var landregion=CompoundDetails.region;
@@ -209,21 +239,22 @@ var  landownership=function(CompoundDetails){
     //var landimage=CompoundDetails.landimage
 
     //data of landownershipStatus
-    var Tenuretype=CompoundDetails.TenureType;
-    var DocumentOfApproval=CompoundDetails.DocumentofApproval;
+    var landownershiptype=CompoundDetails.landownershiptype;
+    var DocumentOfApproval=CompoundDetails.supportingDocuments;
     var DateTended=CompoundDetails.DateTended
 
     var id=generateLandCode(landregion);
     var OwnerType=CompoundDetails.OwnerType; 
-    var newLand=new LandDetails(landsize,landarea,landregion);
+
+    var newLand=new LandDetails(landsize,landarea,landregion)
     
     
-    var newLandOwnershipStatus=new LandOwnershipStatus(Tenuretype,DocumentOfApproval,DateTended);
+    var newLandOwnershipStatus=new LandOwnershipStatus(landownershiptype,DocumentOfApproval,DateTended);
     
     
 
     if(OwnerType==="SingleOwner"){
-        var newSingleOwner=new SingleOwnerDetails(firstname,lastname,othername,contact,email,nationality,NationalIdNo);
+        var newSingleOwner=new SingleOwnerDetails(firstname,lastname,othername,contact,email,NationalIdNo,address,nextOfKin,kin_number,witness,witness_number);
         if(addSingleOwner(newSingleOwner,id) && addLandOwnerShipStatus(newLandOwnershipStatus,id) && addland(newLand,id)){
 
             msg="Data was added successfully";
@@ -416,7 +447,7 @@ const setLandForSale=function(data,callback){
        }   
     const  LandsForSaleReference=firebase.database().ref("LandsForSale");
     LandsForSaleReference.child(data.landid).set({
-     record:data   
+     
     },function(error){
         if(error){
               var  err = "Error occured and data wasnt able to save successfully"
@@ -449,9 +480,58 @@ const getallLandsForSale=function(callback){
           
 }
 
+const getallTransactions=function(callback){
+    var transactionref=firebase.database().ref().child("Transactions");
+    transactionref.on("value",function(snapshot){
+        var Transactions=snapshot.val();
+        return callback(null,Transactions) 
+         },function(error){
+             if(error){
+                var error="An error occured"+errorObject
+                return callback(error,null)
+             }
+    })
+}
 
 
-export {addland,getallLandsForSale,landownership,saveAsaasecode,getAsaaseDetails,asaasecodeExist,updateAsaaseCode,addLandToAccount,setLandForSale,removeFromSale};
+
+const addTransaction=function(data,callback){
+    var d = Date(Date.now());
+    var date=d.toString()
+    var formatedDate=date.substring(0,25)
+    
+    var id=generateID();
+    var  signature=data.signature;
+    var  senderkey=data.senderkey;
+    var  reciepientkey=data.reciepientkey;
+    var  date2=formatedDate
+
+    const  TransactionReference=firebase.database().ref("Transactions");
+    TransactionReference.child(id).set({
+        signature:signature,
+        senderkey:senderkey,
+        TransId:id,
+        reciepientkey:reciepientkey,
+        date:date2
+    },function(error){
+        if(error){
+              var  err = "Error occured and data wasnt able to save successfully"
+         
+        }
+         else{
+           var success = "Data has been saved successfully"
+
+         }
+         return callback(err,success)
+        
+    })
+
+
+
+}
+
+
+export {addland,getallLandsForSale,landownership,saveAsaasecode,getAsaaseDetails,getallTransactions,asaasecodeExist,updateAsaaseCode,addLandToAccount,setLandForSale,removeFromSale,addTransaction};
 
 
 

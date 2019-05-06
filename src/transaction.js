@@ -56,16 +56,15 @@ var TransactionInputs = /** @class */ (function () {
 })
 
 
-var generateSignature=function(Senderpublickey,Reciepientpublickey,asaasecode){
+
+var generateSignature=function(Senderpublickey,Reciepientpublickey,asaasecode,callback){
+    var error=null;
+    var success=null;
     if(!isValidAddress(Senderpublickey)){
-        return{
-            error:"The Sender key you provided is incorrect"
-        }
+        error=new Error("The Sender key  you provided is incorrect")
     }
     else if((!isValidAddress(Reciepientpublickey))){
-        return{
-            error:"The Reciepient key  you provided is incorrect"
-        }
+        error=new Error("The Reciepient key  you provided is incorrect")
     }
     else{
         var code=asaasecode;
@@ -76,15 +75,18 @@ var generateSignature=function(Senderpublickey,Reciepientpublickey,asaasecode){
             senderkey:Senderkey,
             reciepientkey:Reciepientkey
         }
-var signature=encryptData(dataToSign);
+        var signature=encryptData(dataToSign);
     }
-return signature;
+    return callback(error,signature)
+
 }
 
 var getDataFromSignature=function(data){
     var Data=data;
     var decrytedData=decryptdata(Data);
-    return decrytedData
+    return {
+        decrytedData:decrytedData
+}
 }
 
     
@@ -107,37 +109,54 @@ var generatekeys=function(){
 
 
 
- function ProcessTransaction  (data,callback) {
-    asaasecodeExist(data.code,function(response){
-        var status=response
-        if(status){
-            var resp;
-            if(!isValidAddress(data.senderkey)){
-                resp="The Sender key you provided is wrong"
-            }
-            else if(!isValidAddress(data.reciepientkey)){
-                resp="The Reciepient key you provided is wrong"
-            }
-            else{
-                 resp={
-                    asaasecode:data.code,
-                    senderkey:data.senderkey,
-                    reciepientkey:data.reciepientkey
-                }
-            }
-        }
-        return callback({
-            detail:resp
-        })
-    })
-       
-    }
+
 function lockTransaction(){
     
-}         
+} 
 
+
+ const transact=function(asaasecode,senderkey,reciepientkey,callback){
+     var error=null;
+     var mydata=null;
+     generateSignature(senderkey,reciepientkey,asaasecode,function(err,signature){
+         if(err){
+             error=new Error(err.message);
+             return callback(error,null);
+         }else{
+            var data=signature;
+            
+            var signatureDetails=getDataFromSignature(data);
+            
+            asaasecodeExist(signatureDetails.decrytedData.code,function(response){
+                if(response.response){
+                    mydata={
+                        signature:data,
+                        senderkey:senderkey,
+                        reciepientkey:reciepientkey
+   
+                    }  
+                 
+                 
+                }
+                   else{
+                    error=new Error("The asaasecode you provided is incorrect");    
+                   }
+       return callback(error,mydata);
+                })
+     };
+     
+
+
+    
+     
+
+     })
+ }
        
-        
+ function ProcessTransaction  (data,callback) {
+   transact
+       
+}
          
 
             
@@ -146,6 +165,6 @@ function lockTransaction(){
     
 
     
-export {generatekeys,generateSignature,getDataFromSignature, ProcessTransaction,TransactionInputs,TransactionOutput};
+export {generatekeys,generateSignature,getDataFromSignature, ProcessTransaction,TransactionInputs,TransactionOutput,transact,isValidAddress};
 
 

@@ -139,12 +139,11 @@ var getareacode=function(region){
         case "Volta":
         code=AreaCodes.get(region);
         break;
-
         case "Upper-East":
         code=AreaCodes.get(region);
         break;
 
-        case "Upper-Wast":
+        case "Upper-West":
         code=AreaCodes.get(region);
         break;
 
@@ -200,7 +199,8 @@ function encryptData(text) {
     let decrypted = decipher.update(encryptedText);
     
     decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
+    var data=decrypted.toString();
+    return JSON.parse(data)
    }
    
    

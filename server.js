@@ -10,18 +10,19 @@ const cors = require('cors')
 const app = express();
 const routes=require('./firebase/route');
 const path = require('path');
+const session = require('express-session');
+require('dotenv').config();
 
 
 
 
 import {connectToPeers, getSockets, initP2PServer} from './src/peer2peer';
 import {Block,Transaction,LandOwnerShip, generateNextBlock, getBlockchain} from './src/blockchain';
-import {generatekeys,generateSignature,getDataFromSignature,ProcessTransaction}from './src/transaction';
+import {generatekeys,generateSignature,getDataFromSignature,ProcessTransaction,transact,isValidAddress}from './src/transaction';
 import {firebase}from './firebase/firebasekey';
-import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,asaasecodeExist,addLandToAccount,setLandForSale,removeFromSale,getallLandsForSale} from './firebase/modules';
+import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,asaasecodeExist,addLandToAccount,setLandForSale,removeFromSale,getallLandsForSale,getallTransactions,addTransaction} from './firebase/modules';
 import {encryptData,decryptdata,generateSecurityKey,sendEmail,designMessagebody,generateLandCode,generateAsaaseCode} from './firebase/helper';
 import {register,login} from './authentication/authentication';
-
 
 
 
@@ -34,10 +35,29 @@ import {register,login} from './authentication/authentication';
       res.sendFile(path.join(__dirname, 'index.html'));
   });
 
+  app.post('/isvalid',function(req,res){
+  
+    //console.log(req.body)
+   var response= isValidAddress(req.body.key)
+   if(response){
+    res.status(200).json(response)
+   }
+   else{
+    res.status(404).json(response)
+   }
+   
+   
+  
 
-
+  })
       app.get('/allLandsForSale',function(req,res){
         getallLandsForSale(function(err,response){
+          if(err)res.send(err)
+          res.send(response)
+        })
+      })
+      app.get('/allTransactions',function(req,res){
+        getallTransactions(function(err,response){
           if(err)res.send(err)
           res.send(response)
         })
@@ -48,6 +68,7 @@ import {register,login} from './authentication/authentication';
       });
 
       app.post('/login',function(req,res){
+         
         login(req.body,function(data){
           var response=data;
           if(response.auth){
@@ -60,19 +81,22 @@ import {register,login} from './authentication/authentication';
          
       })
 
+      
+
       app.post('/register',function(req,res){
 
       })
 
       app.post('/RegisterLand',function(req,res){
         var data=landownership(req.body);
+        
         var phonenumber=req.body.contact;
         var newBlock=generateNextBlock(req.body);
         var feedback=newBlock.message;
         if(feedback !=null && data.msg !=null){
-          res.send(feedback);
+          res.status(200).send({success:feedback});
         }else{
-          res.send("An error occurred and was unable to save");
+          res.status(404).send({error:"An error occurred and was unable to save"});
         }
         let body='';
         body={
@@ -167,6 +191,33 @@ import {register,login} from './authentication/authentication';
      
       
       })
+      app.post('/makeTransaction',function(req,res){
+        
+       transact(req.body.asaasecode,req.body.senderkey,req.body.reciepientkey,function(err,response){
+        if(err){
+          res.status(404).send(err.message)   
+        }
+        else{
+          var data={
+            signature:response.signature,
+            senderkey:response.senderkey,
+            reciepientkey:response.reciepientkey,
+          }
+          addTransaction(data,function(err,success){
+            if(err){
+              res.status(404).send(err.message)   
+            }else{
+              res.status(200).send(success)
+            }
+          })
+          
+       
+        }
+
+       })
+     
+      
+      })
       app.post('/mineBlock', function (req, res) {
         var newBlock = generateNextBlock(req.body);
         var feedback=newBlock.message;
@@ -187,7 +238,7 @@ app.get('/getKeys',function(req,res){
   
 });
 
-app.listen(process.env.PORT || 4000, function(){
+app.listen(process.env.PORT, function(){
   console.log('Your node js server is running');
 });
 

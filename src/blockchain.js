@@ -144,9 +144,20 @@ var generateNextBlock = function (blockData) {
     else{
         Blocktitle="Landownership";
         newBlockData={
-            ownerDetails:blockData.firstname+" "+blockData.lastname+" "+blockData.othername,
-            LandDetails:blockData.region+" "+blockData.landarea,
-            LandOwnerShipDetails:blockData.DocumentofApproval
+            ownerDetails:{
+             name: blockData.firstname+" "+blockData.lastname+" "+blockData.othername,
+             contact:blockData.contact,
+             email:blockData.email  
+            },
+            LandDetails:{
+                region:blockData.region,
+                area:blockData.landarea,
+            },
+            LandOwnerShipDetails:{
+                landownershiptype:blockData. landownershiptype,
+                supportingDocument:blockData.supportingDocuments,
+                Date:blockData.DateTended
+            }
         }
     }
     var previousBlock = getLatestBlock();
@@ -191,7 +202,7 @@ var addBlock = function (newBlock) {
     if (isValidNewBlock(newBlock, getLatestBlock())) {
         blockchain.push(newBlock);
         return{
-            msg:"Data added successfully"
+            msg:"You have successfully added a new block to the chain"
         }
     }
     else{
