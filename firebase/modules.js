@@ -361,7 +361,7 @@ const  getAsaaseDetails=function(asaasecode,callback){
             encryptedData:snapshot.val().record.encryptedData
         }
         const  decryptedData=decryptdata(Data);
-        const mydetail =JSON.parse(decryptedData);
+        const mydetail =decryptedData
         return callback({
             detail:mydetail
         })
