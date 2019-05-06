@@ -165,7 +165,7 @@ import {register,login} from './authentication/authentication';
       app.post('/GetDetails',function(req,res){
         getAsaaseDetails(req.body.asaasecode,function(detail){
           var data=detail;
-          res.send(data);
+          res.json(data);
         })
       })
       app.post('/createSignature',function(req,res){
