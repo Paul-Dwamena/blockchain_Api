@@ -409,6 +409,7 @@ const addLandToAccount=function(data,callback){
                          landregion:response.detail.data.others.region,
                          landarea:response.detail.data.others.landarea,
                          sizeofLand:response.detail.data.others.landsize,
+                         asaasecode:asaasecode
                      }
                     
                  }

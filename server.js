@@ -106,8 +106,8 @@ import {register,login} from './authentication/authentication';
         saveAsaasecode(body,function(details){
           var asaasecode=details.asaasecode;
           var securitynumber=details.securitynumber;
-          //var messagebody=designMessagebody(asaasecode,securitynumber);
-         // sendEmail(phonenumber,messagebody,"Registration sucessful.Find your details below") 
+          var messagebody=designMessagebody(asaasecode,securitynumber);
+          sendEmail(phonenumber,messagebody,"Registration sucessful.Find your details below") 
         })
       
       })
@@ -115,12 +115,12 @@ import {register,login} from './authentication/authentication';
       app.post('/addLandToAccount',function(req,res){
         addLandToAccount(req.body,function(err,data){
           if(err){
-            res.status(404).send({error:err.message})
+            res.status(404).json({error:err.message})
         
             
           }
           else{
-            res.status(200).send({response:data})
+            res.status(200).json({response:data})
          
           }
         })
