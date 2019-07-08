@@ -116,8 +116,6 @@ import {register,login} from './authentication/authentication';
         addLandToAccount(req.body,function(err,data){
           if(err){
             res.status(404).json({error:err.message})
-        
-            
           }
           else{
             res.status(200).json({response:data})

@@ -3,6 +3,7 @@ var bcrypt = require('bcryptjs');
 var secret=require("../config/secret");
 const randomstring =require("randomstring");
 import {firebase} from "../firebase/firebasekey";
+const fs=require('fs')
 
 
 var generateString=function(){
@@ -125,5 +126,21 @@ const login=function(data,callback){
             }
 
 
+
+            function createfolder(projectTitle,callback){
+                var path='./Projects/'+projectTitle
+                                fs.mkdir(path,function(err,data){
+                                    if(err){
+                                        return callback(err)
+                                    }
+                                    else{
+                                        return callback(data+"Sucessfully done")
+                                    }
+                                })
+                               
+                            }
+                           
+
+            
   
 export{register,login};
