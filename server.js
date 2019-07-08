@@ -64,8 +64,13 @@ import {register,login,createfolder} from './authentication/authentication';
       })
   
       app.post('/createfolder',function(req,res){
-        createfolder(req.body.title,function(response){
-          res.send(response)
+        createfolder(req.body.title,function(err,response){
+          if(err){
+            res.send(err)
+          }else{
+            res.send(response)
+          }
+          
       })
     })
       app.get('/blocks', function (req, res) {

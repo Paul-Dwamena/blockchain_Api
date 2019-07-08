@@ -130,13 +130,17 @@ const login=function(data,callback){
         const createfolder=function(projectTitle,callback){
                 var path='./src/'+projectTitle
                                 fs.mkdir(path,function(err,data){
-                                    if(data){
-                                        console.log(data)
+                                    if(err){
+                                        return callback(err,null)
                                     }
-                                   return callback({
-                                       path:path,
-                                       success:"You created folder successfully"
-                                   })
+                                    else{
+                                        return callback({
+                                            path:path,
+                                            success:"You created folder successfully"
+                                        })
+
+                                    }
+                                  
     
                                 })
                                
