@@ -127,15 +127,17 @@ const login=function(data,callback){
 
 
 
-            function createfolder(projectTitle,callback){
-                var path='./Projects/'+projectTitle
+        const createfolder=function(projectTitle,callback){
+                var path='./src/'+projectTitle
                                 fs.mkdir(path,function(err,data){
-                                    if(err){
-                                        return callback(err)
+                                    if(data){
+                                        console.log(data)
                                     }
-                                    else{
-                                        return callback(data+"Sucessfully done")
-                                    }
+                                   return callback({
+                                       path:path,
+                                       success:"You created folder successfully"
+                                   })
+    
                                 })
                                
                             }
@@ -143,4 +145,4 @@ const login=function(data,callback){
 
             
   
-export{register,login};
+export{register,login,createfolder};

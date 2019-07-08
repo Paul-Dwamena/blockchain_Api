@@ -22,7 +22,7 @@ import {generatekeys,generateSignature,getDataFromSignature,ProcessTransaction,t
 import {firebase}from './firebase/firebasekey';
 import {addland,landownership,saveAsaasecode,getAsaaseDetails,updateAsaaseCode,asaasecodeExist,addLandToAccount,setLandForSale,removeFromSale,getallLandsForSale,getallTransactions,addTransaction} from './firebase/modules';
 import {encryptData,decryptdata,generateSecurityKey,sendEmail,designMessagebody,generateLandCode,generateAsaaseCode} from './firebase/helper';
-import {register,login} from './authentication/authentication';
+import {register,login,createfolder} from './authentication/authentication';
 
 
 
@@ -63,6 +63,11 @@ import {register,login} from './authentication/authentication';
         })
       })
   
+      app.post('/createfolder',function(req,res){
+        createfolder(req.body.title,function(response){
+          res.send(response)
+      })
+    })
       app.get('/blocks', function (req, res) {
         res.send(getBlockchain());
       });
